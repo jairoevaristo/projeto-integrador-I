@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
+model Usuario {
+    id             String  @id @default(uuid())
+    nome           String
+    email          String  @unique
+    senha          String
+    imagem         String?
+    ativo          Boolean @default(false)
+    recuperarSenha String? @default(uuid())
+
+    @@map("usuarios")
+}
+
+model Time {
+    id         String  @id @default(uuid())
+    nome       String
+    abreviacao String
+    escudo     String?
+    userId     String?
+
+    @@map("times")
+}
+
+model Jogador {
+    id      String  @id @default(uuid())
+    nome    String
+    posicao String
+    numero  String
+    imagem  String?
+    timeId  String?
+
+    @@map("jogadores")
+}
+
+model Campeonato {
+    id             String         @id @default(uuid())
+    nome           String
+    descricao      String
+    premiacao      String
+    dataInicio     String
+    dataFim        String
+    logo           String?
+    situacao       String          @default("ABERTO")
+    qtdTimes       Int
+    userId         String?
+    tipoCampeonato String 		@default("PONTOS")
+
+    @@map("campeonatos")
+}
+
+model Partida {
+    id           String @id @default(uuid())
+    data         String
+    horario      String
+    local        String
+    campeonatoId String
+    time1Id      String
+    time2Id      String
+    placar1      Int
+    placar2      Int
+    userId       String?
+
+    @@map("partidas")
+}
+
+model campeonatoPontosCorridos {
+    id           String @id @default(uuid())
+    campeonatoId String
+    timeId       String
+    pontos       Int
+    jogos        Int
+    vitorias     Int
+    empates      Int
+    derrotas     Int
+    golsPro      Int
+    golsContra   Int
+    saldoGols    Int
+
+    @@map("pontosCorridos")
+}
