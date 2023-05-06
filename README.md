@@ -11,6 +11,7 @@ Sistema de gerenciamento de campeonatos de futebol.
 - ReactJs
 - NodeJs
 - Express
+- Typescript
 - Tailwindcss
 - SQLite
 
