@@ -17,7 +17,7 @@ Sistema de gerenciamento de campeonatos de futebol.
 <hr />
 
 ## Prerequisitos
- - NodeJs 14.x.x <br /><a href="[http://...](https://nodejs.org/en/blog/release/v14.17.3)" target="_blank">Download NodeJs v14</a>
+ - NodeJs 14.x.x <br /><a href="https://nodejs.org/en/blog/release/v14.17.3" target="_blank">Download NodeJs v14</a>
 
 ## Instalação
 
