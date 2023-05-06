@@ -16,6 +16,9 @@ Sistema de gerenciamento de campeonatos de futebol.
 
 <hr />
 
+## Prerequisitos
+ - NodeJs 14.x.x
+
 ## Instalação
 
 1 - Clone o repositório
