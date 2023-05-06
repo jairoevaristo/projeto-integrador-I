@@ -2,8 +2,7 @@
 
 ## Descrição do Projeto
 
-Sistema de gerenciamento de campeonatos de futebol.
-
+Sistema de gerenciamento de campeonatos.
 <hr />
 
 ## Tecnologias utilizadas
