@@ -39,6 +39,11 @@ Em seguida
 cd backend && npm install
 ```
 
+3 - Criar um arquivo `.env` na pasta `backend`, dentro desse arquivo inserir uma key chamada `JWT_SECRET`, da mesma forma como o arquivo `.env.example`, essa key pode ter qualquer valor em string
+recomenda-se gerar um hash para ser o valor dessa key.
+
+<br /> [Link para gerar hash](https://www.md5hashgenerator.com/)
+
 <hr />
 
 ## Execução
