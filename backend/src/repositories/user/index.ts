@@ -1,13 +1,14 @@
 import { PrismaClient } from "@prisma/client";
-import { v4 } from 'uuid';
+import { v4 } from "uuid";
 
 import { SaveUserDTO } from "../../dtos/saveUser";
 import { updateUserDTO } from "../../dtos/updateUser";
+import { User } from "../../dtos/user";
 
 export class UserRepository {
   constructor(private prisma: PrismaClient) {}
 
-  async save(user: SaveUserDTO) {
+  async save(user: SaveUserDTO): Promise<User[]> {
     const createUser = await this.prisma.$queryRaw`
 			INSERT INTO 'main'.'usuarios' ('id', 'nome', 'email', 'senha', 'imagem', 'ativo', 'recuperarSenha') 
 			VALUES (
@@ -21,7 +22,7 @@ export class UserRepository {
             ) RETURNING id
 		`;
 
-        return createUser
+    return createUser as User[];
   }
 
   async login(email: string, senha: string) {
@@ -33,10 +34,10 @@ export class UserRepository {
 			WHERE ('main'.'usuarios'.'email' = ${email}
 			AND 'main'.'usuarios'.'senha' = ${senha});
 		`;
-      return user
-    }
+    return user;
+  }
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<User[]> {
     const user = await this.prisma.$queryRaw`
 			SELECT 'main'.'usuarios'.'id', 'main'.'usuarios'.'nome', 
 			'main'.'usuarios'.'email', 'main'.'usuarios'.'senha', 'main'.'usuarios'.'imagem', 
@@ -44,7 +45,7 @@ export class UserRepository {
 			FROM 'main'.'usuarios' 
 			WHERE ('main'.'usuarios'.'email' = ${email});
 		`;
-    return user
+    return user as User[];
   }
 
   async findUserById(id: string) {
@@ -55,7 +56,7 @@ export class UserRepository {
 			FROM 'main'.'usuarios' 
 			WHERE ('main'.'usuarios'.'id' = ${id});
 		`;
-    return user
+    return user;
   }
 
   async update(user: updateUserDTO, id: string) {
@@ -64,7 +65,7 @@ export class UserRepository {
 			'senha' = ${user.senha}, 'imagem' = ${user.imagem}, 'ativo' = ${user.ativo} 
 			WHERE 'main'.'usuarios'.'id' = ${id};
 		`;
-    return userUpdate
+    return userUpdate;
   }
 
   async delete(id: string) {

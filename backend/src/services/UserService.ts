@@ -18,8 +18,8 @@ export class UserService {
       });
       return user;
     } catch (error: any) {
-      new AppLogger().error({ error: error.message });
-      return false;
+      new AppLogger().error(error);
+      return null;
     }
   }
 
@@ -28,8 +28,8 @@ export class UserService {
       const user = await this.userRepository.login(email, senha);
       return user;
     } catch (error: any) {
-      new AppLogger().error({ error: error.message });
-      return false;
+      new AppLogger().error(error);
+      return null;
     }
   }
 
@@ -38,8 +38,8 @@ export class UserService {
       const user = await this.userRepository.findByEmail(email);
       return user;
     } catch (error: any) {
-      new AppLogger().error({ error: error.message });
-      return false;
+      new AppLogger().error(error);
+      return [];
     }
   }
 
@@ -48,8 +48,8 @@ export class UserService {
       const userUpdate = await this.userRepository.update(user, id);
       return userUpdate;
     } catch (error: any) {
-      new AppLogger().error({ error: error.message });
-      return false;
+      new AppLogger().error(error);
+      return null;
     }
   }
 
@@ -58,8 +58,8 @@ export class UserService {
       const userDelete = await this.userRepository.delete(id);
       return userDelete;
     } catch (error: any) {
-      new AppLogger().error({ error: error.message });
-      return false;
+      new AppLogger().error(error);
+      return null;
     }
   }
 
@@ -68,8 +68,8 @@ export class UserService {
       const user = await this.userRepository.findUserById(id);
       return user;
     } catch (error: any) {
-      new AppLogger().error({ error: error.message });
-      return false;
+      new AppLogger().error(error);
+      return null;
     }
   }
 }

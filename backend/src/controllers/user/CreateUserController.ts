@@ -14,7 +14,7 @@ export class CreateUserController {
     const { nome, email, senha, imagem }: SaveUserDTO = req.body;
     const isUserExists = await userService.findByEmail(email);
 
-    if (isUserExists) {
+    if (isUserExists?.length > 0) {
       return res.send({ message: "Email já cadastrado!" }).status(400);
     }
 

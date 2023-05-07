@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jsonWebToken from "jsonwebtoken";
-import 'dotenv/config'
+import "dotenv/config";
+import { AppLogger } from "../logger/AppLogger";
 
 type IPayloadToken = {
   sub: string;
@@ -19,7 +20,7 @@ export function ensureAutheticated(
 
   const [bearer, token] = authorization.split(" ");
 
-  if (bearer !== 'Bearer') {
+  if (bearer !== "Bearer") {
     return res.status(400).json({ message: "Token type is not Bearer" });
   }
 
@@ -31,14 +32,12 @@ export function ensureAutheticated(
 
     req.user_id = sub;
     return next();
-
   } catch (error: any) {
     if (error.name === "TokenExpiredError") {
       return res.status(400).json({ error: "Token expired" });
     }
 
-    console.log({error})
-
+    new AppLogger().error(error);
     return res.status(400).json({ error: "invalid token" });
   }
 }
