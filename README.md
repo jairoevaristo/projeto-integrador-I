@@ -63,7 +63,7 @@ cd backend && npm run dev
 **🎲 Visualizar banco de dados (opcional)**
 
 ```bash
-cd frontend && npx prisma studio
+cd backend && npx prisma studio
 ```
 
 Após executar o comando para visualizar o banco de dados, acesse o endereço: **`http://localhost:5555/`**
