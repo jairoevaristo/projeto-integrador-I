@@ -43,7 +43,7 @@ export const Header: React.FC = () => {
       <div className="flex items-center gap-4">
         <ProfileAvatar name={user?.nome} avatar_url={user?.imagem} />
         <span className="text-white text-md tracking-wider w-38 truncate ...">
-          Olá, Jairo Evaristo
+          Olá, {user.nome}
         </span>
 
         <div>
