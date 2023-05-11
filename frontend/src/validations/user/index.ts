@@ -12,3 +12,14 @@ export const signUpSchemaValidator = yup.object({
   confirmar_senha: yup.string()
      .oneOf([yup.ref('senha')], 'As senhas são diferentes').required("Este campo é obrigatório")
 })
+
+export const profileSchemaValidator = yup.object({
+  nome: yup.string().required("Este campo é obrigatório"),
+  email: yup.string().email("Informe um e-mail válido").required("Este campo é obrigatório"),
+})
+
+export const passwordSchemaValidator = yup.object({
+  senha: yup.string().required("Este campo é obrigatório"),
+  confirmar_senha: yup.string()
+     .oneOf([yup.ref('senha')], 'As senhas são diferentes').required("Este campo é obrigatório")
+})

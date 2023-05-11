@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ArrowLeft, Eye, EyeClosed } from "phosphor-react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { Button } from "../components/Button";
@@ -17,6 +17,7 @@ export const SignUp: React.FC = () => {
   });
 
   const { handleToast } = useToast();
+  const navigate = useNavigate();
 
   const [avatar, setAvatar] = useState<File[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -34,6 +35,7 @@ export const SignUp: React.FC = () => {
     createUser(userData)
       .then((response) => {
         handleToast(response.message);
+        navigate("/");
       })
       .catch((err) => {
         handleToast(err.response?.data?.message);

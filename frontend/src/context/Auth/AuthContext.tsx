@@ -7,6 +7,8 @@ export type AuthContextType = {
 	signOut: () => void;
 	loading: boolean;
 	token: string;
+	deleteUserAccount: () => void;
+	me: () => void;
 };
 
 export const AuthContext = createContext<AuthContextType>(null!);

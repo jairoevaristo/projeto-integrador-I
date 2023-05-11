@@ -10,6 +10,7 @@ import { useToast } from "../../hooks/useToast";
 import { loginUser } from "../../services/login-user";
 
 import { currentUserData } from "../../services/me";
+import { deleteUser } from "../../services/delete-user";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { handleToast } = useToast();
@@ -80,9 +81,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const deleteUserAccount  = async () => {
+    setLoading(true);
+
+    try {
+      loadTokenStorageData();
+      const response = await deleteUser();
+      handleToast(response.message);
+      signOut();
+    } catch (err: any) {
+      handleToast(err.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user: user!, signIn, signOut, loading, token }}
+      value={{ user: user!, signIn, signOut, loading, token, deleteUserAccount, me }}
     >
       {children}
     </AuthContext.Provider>

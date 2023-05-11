@@ -43,9 +43,16 @@ export class UserService {
     }
   }
 
-  async update(user: updateUserDTO, id: string) {
+  async update(
+    { ativo, nome, email, senha, imagem }: updateUserDTO,
+    id: string
+  ) {
     try {
-      const userUpdate = await this.userRepository.update(user, id);
+      const senhaCriptografada = senha ? criptografar(senha) : senha;
+      const userUpdate = await this.userRepository.update(
+        { ativo, nome, email, senha: senhaCriptografada, imagem },
+        id
+      );
       return userUpdate;
     } catch (error: any) {
       new AppLogger().error(error);

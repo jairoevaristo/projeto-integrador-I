@@ -1,5 +1,5 @@
 import { DribbbleLogo, House, Power, User, Users } from "phosphor-react";
-import { Link, useLocation, useRoutes } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 import { Menu } from "./Menu";
@@ -41,7 +41,7 @@ export const Header: React.FC = () => {
       </div>
 
       <div className="flex items-center gap-4">
-        <ProfileAvatar name={user?.nome} avatar_url={user?.imagem} />
+        <ProfileAvatar name={user.nome} avatar_url={user.imagem} />
         <span className="text-white text-md tracking-wider w-38 truncate ...">
           Olá, {user.nome}
         </span>
