@@ -20,5 +20,5 @@ userRoutes.post("/cadastrar", createUserController.execute);
 userRoutes.post("/login", loginUserController.execute);
 
 userRoutes.post("/atualizar", ensureAutheticated, updateUserController.execute);
-userRoutes.post("/apagar-conta", ensureAutheticated, deleteUserController.execute);
+userRoutes.get("/apagar-conta", ensureAutheticated, deleteUserController.execute);
 userRoutes.get("/me", ensureAutheticated, currentUserController.execute);
