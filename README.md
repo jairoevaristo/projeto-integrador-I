@@ -54,6 +54,11 @@ cd frontend && npm run dev
 ```bash
 cd backend && npm run dev
 ```
+para rodar as migrations
+
+```bash
+cd backend && npx prisma migrate dev
+```
 
 **🎲 Visualizar banco de dados (opcional)**
 
