@@ -38,7 +38,7 @@ Em seguida
 ```bash
 cd backend && npm install
 ```
-para rodar as migrations
+- para rodar as migrations
 
 ```bash
 cd backend && npx prisma migrate dev
