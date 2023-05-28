@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { v4 } from "uuid";
 
-import { SaveUserDTO } from "../../dtos/saveUser";
-import { updateUserDTO } from "../../dtos/updateUser";
-import { User } from "../../dtos/user";
+import { SaveUserDTO } from "../../dtos/user/saveUser";
+import { updateUserDTO } from "../../dtos/user/updateUser";
+import { User } from "../../dtos/user/user";
 
 export class UserRepository {
   constructor(private prisma: PrismaClient) {}

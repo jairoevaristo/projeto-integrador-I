@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { SaveUserDTO } from "../../dtos/saveUser";
+import { SaveUserDTO } from "../../dtos/user/saveUser";
 
 import { prisma } from "../../infra/database/prisma";
 

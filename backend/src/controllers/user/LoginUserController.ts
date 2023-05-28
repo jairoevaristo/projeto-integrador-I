@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import JsonWebToken from "jsonwebtoken";
-import { LoginUserDTO } from "../../dtos/loginUser";
+import { LoginUserDTO } from "../../dtos/user/loginUser";
 
 import { prisma } from "../../infra/database/prisma";
 import { AppLogger } from "../../logger/AppLogger";
 
 import { UserRepository } from "../../repositories/user";
-import { criptografar } from "../../services/criptografia/criptografia";
+import { criptografar } from "../../utils/criptografia";
 import { UserService } from "../../services/UserService";
 
 export class LoginUserController {

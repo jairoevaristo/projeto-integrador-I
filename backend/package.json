@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "tsnd --files src/server.ts"
+    "dev": "tsx watch --ignore ./node_modules src/server.ts"
   },
   "license": "ISC",
   "devDependencies": {
@@ -45,6 +45,7 @@
     "nodemailer-express-handlebars": "^5.0.0",
     "sharp": "^0.30.6",
     "sqlite3": "^5.1.6",
+    "tsx": "^3.12.7",
     "uuid": "^9.0.0"
   }
 }

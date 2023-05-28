@@ -1,9 +1,9 @@
-import { SaveUserDTO } from "../dtos/saveUser";
-import { updateUserDTO } from "../dtos/updateUser";
+import { SaveUserDTO } from "../dtos/user/saveUser";
+import { updateUserDTO } from "../dtos/user/updateUser";
 import { AppLogger } from "../logger/AppLogger";
 import { UserRepository } from "../repositories/user";
 
-import { criptografar } from "./criptografia/criptografia";
+import { criptografar } from "../utils/criptografia";
 
 export class UserService {
   constructor(private userRepository: UserRepository) {}

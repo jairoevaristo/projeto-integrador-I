@@ -6,12 +6,12 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+    provider = "sqlite"
+    url      = "file:./dev.db"
 }
 
 generator erd {
-  provider = "prisma-erd-generator"
+    provider = "prisma-erd-generator"
 }
 
 model Usuario {
@@ -27,13 +27,23 @@ model Usuario {
 }
 
 model Time {
-    id         String  @id @default(uuid())
-    nome       String
-    abreviacao String
-    escudo     String?
-    userId     String?
+    id           String      @id @default(uuid())
+    nome         String
+    abreviacao   String
+    escudo       String?
+    userId       String?
+    Campeonato   Campeonato? @relation(fields: [campeonatoId], references: [id])
+    campeonatoId String?
 
     @@map("times")
+}
+
+model InscricaoCampeonato {
+    id           String @id @default(uuid())
+    campeonatoId String
+    timeId       String
+
+    @@map("inscricao_campeonato")
 }
 
 model Jogador {
@@ -48,23 +58,24 @@ model Jogador {
 }
 
 model Campeonato {
-    id             String         @id @default(uuid())
+    id             String  @id @default(uuid())
     nome           String
     descricao      String
     premiacao      String
     dataInicio     String
     dataFim        String
     logo           String?
-    situacao       String          @default("ABERTO")
+    situacao       String  @default("ABERTO")
     qtdTimes       Int
     userId         String?
-    tipoCampeonato String 		@default("PONTOS")
+    tipoCampeonato String  @default("PONTOS")
+    times          Time[]
 
     @@map("campeonatos")
 }
 
 model Partida {
-    id           String @id @default(uuid())
+    id           String  @id @default(uuid())
     data         String
     horario      String
     local        String
