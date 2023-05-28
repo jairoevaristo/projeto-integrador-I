@@ -9,10 +9,8 @@ import { ChampionshipService } from "../../services/ChampionshipService";
 
 export class CreateChampionshipController {
     async execute(req: Request, res: Response) {
-        console.log('d')
         const createChampionship: Omit<CreateChampionshipDTO, 'userId'> = req.body;
         const userId = req.user_id;
-
 
         const championshipRepository = new ChampionshipRepository(prisma);
         const championshipService = new ChampionshipService(championshipRepository);
