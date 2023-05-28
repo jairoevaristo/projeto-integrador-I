@@ -8,7 +8,7 @@ import { Button } from "../components/Button";
 import { ControllerTextInput } from "../components/ControllerTextInput";
 import { UploadAvatar } from "../components/UploadAvatar";
 import { signUpSchemaValidator } from "../validations/user";
-import { createUser } from "../services/create-user";
+import { createUser } from "../services/user/create-user";
 import { useToast } from "../hooks/useToast";
 
 export const SignUp: React.FC = () => {
@@ -112,7 +112,10 @@ export const SignUp: React.FC = () => {
           />
 
           <div className="mt-4">
-            <UploadAvatar onHandleSelectedAvatar={setAvatar} />
+            <UploadAvatar
+              title="Selecione uma foto pra o seu perfil"
+              onHandleSelectedAvatar={setAvatar} 
+            />
           </div>
 
           <Button text="Fazer cadastro" className="mt-4" isLoading={loading} />

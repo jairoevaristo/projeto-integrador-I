@@ -4,9 +4,10 @@ import React, {
     ReactNode,
     useState,
   } from "react";
-import { RenderConditional } from "./RenderConditional";
+  import InputMask from "react-input-mask";
   
-  export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
+  export interface TextInputMaskProps
+    extends InputHTMLAttributes<HTMLInputElement> {
     offset?: boolean;
     leftIcon?: ReactNode;
     rightIcon?: ReactNode;
@@ -15,11 +16,10 @@ import { RenderConditional } from "./RenderConditional";
     onClickRightIcon?: () => void;
     onClickLeftIcon?: () => void;
     className?: string;
-    isPassword?: boolean
-    isTextArea?: boolean;
+    mask: string;
   }
   
-  export const TextInput: React.FC<TextInputProps> = forwardRef(
+  export const TextInputMask: React.FC<TextInputMaskProps> = forwardRef(
     (
       {
         error,
@@ -28,9 +28,8 @@ import { RenderConditional } from "./RenderConditional";
         onClickLeftIcon,
         onClickRightIcon,
         label,
-        isPassword,
         className,
-        isTextArea,
+        mask,
         ...props
       },
       ref
@@ -59,8 +58,9 @@ import { RenderConditional } from "./RenderConditional";
             <div className="mr-2" onClick={onClickLeftIcon}>
               {leftIcon}
             </div>
-            <RenderConditional condition={!isTextArea}>
-            <input
+            <InputMask
+              type={props.type}
+              mask={mask}
               value={props.value}
               onFocus={handleInputFocus}
               name={props.name}
@@ -69,21 +69,8 @@ import { RenderConditional } from "./RenderConditional";
               }`}
               {...props}
             />
-            </RenderConditional>
-            
-              <RenderConditional condition={!!isTextArea}>
-                <textarea
-                  value={props.value}
-                  onFocus={handleInputFocus}
-                  name={props.name}
-                  className={`w-full border-0 p-0 ring-0 outline-none bg-none overflow-hidden bg-zinc-800 placeholder-gray-400 text-white ${
-                    error && "placeholder-red-600 text-red-600"
-                  }`}
-                  {...props}
-                />
-              </RenderConditional>
 
-            <div className={isPassword ? "cursor-pointer" : ""} onClick={onClickRightIcon}>
+            <div>
               {rightIcon}
             </div>
           </div>

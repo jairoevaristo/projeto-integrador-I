@@ -7,10 +7,12 @@ import { SpinnerLoading } from "./SpinnerLoading";
 
 interface UploadAvatarProps {
   onHandleSelectedAvatar: (base64: File[] | null) => void;
+  title: string;
 }
 
 export const UploadAvatar: React.FC<UploadAvatarProps> = ({
   onHandleSelectedAvatar,
+  title
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [isVisibleImageGallery, setIsVisibleImageGallery] = useState(false);
@@ -40,8 +42,8 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({
       <div>
         <div className="flex justify-between">
           <div>
-            <span className="font-light text-white text-sm">
-              Selecione uma foto pra o seu perfil
+            <span className="font-semibold text-gray-400 text-sm">
+              {title}
             </span>
             <div className="w-full flex">
               <button
@@ -66,7 +68,7 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({
           <RenderConditional condition={!errorImage && loadingUploadFile}>
             <div className="flex">
               <div className="flex items-center justify-center flex-col">
-                <p className="uppercase text-gray-500 font-semibold text-[12px]">
+                <p className="uppercase text-center text-gray-500 font-semibold text-[12px]">
                   preview da imagem
                 </p>
                 <div className="h-16 w-16 rounded-md border-2 border-blue-200 shadow-lg flex items-center justify-center">
@@ -81,7 +83,7 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({
           >
             <div className="flex relative">
               <div className="flex items-center justify-center flex-col">
-                <p className="uppercase text-gray-500 font-semibold text-[12px]">
+                <p className="uppercase text-gray-500 text-center font-semibold text-[12px]">
                   preview da imagem
                 </p>
                 <img

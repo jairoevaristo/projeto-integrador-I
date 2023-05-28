@@ -1,16 +1,19 @@
 import { MagnifyingGlass, Plus } from "phosphor-react";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "../components/Button";
-import { Header } from "../components/Header";
 import { Layout } from "../components/Layout";
 import { ListChampions } from "../components/ListChampions";
 import { TextInput } from "../components/TextInput";
 
 export const Home: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Layout>
       <div className="flex items-center justify-end mt-6">
         <Button
+          onClick={() => navigate('/app/criar-campeonato')}
           text="Novo campeonato"
           icon={<Plus className="text-white" size={20} />}
         />

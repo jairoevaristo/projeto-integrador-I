@@ -33,6 +33,7 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({ menuButtonItem }) => {
 
   return (
     <button
+      type="button"
       key={menuButtonItem.name}
       onClick={menuButtonItem?.onClick}
       className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-zinc-900 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"

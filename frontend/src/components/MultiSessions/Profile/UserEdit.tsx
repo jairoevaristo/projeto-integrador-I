@@ -7,7 +7,7 @@ import { UploadAvatar } from "../../UploadAvatar";
 import { useAuth } from "../../../hooks/useAuth";
 import { Button } from "../../Button";
 import { useToast } from "../../../hooks/useToast";
-import { updateUser } from "../../../services/update-user";
+import { updateUser } from "../../../services/user/update-user";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useSession } from "../../../hooks/useSession";
 
@@ -18,7 +18,7 @@ export const UserEdit: React.FC = () => {
   
   const [loading, setLoading] = useState(false);
   const [avatar, setAvatar] = useState<File[] | null>(
-    user.imagem ? [new File([user.imagem], 'avatar')] : null
+    user?.imagem ? [new File([user.imagem], 'avatar')] : null
   );
 
   const { control, handleSubmit } = useForm({
@@ -54,17 +54,17 @@ export const UserEdit: React.FC = () => {
           label="Nome"
           placeholder="Digite seu nome"
           autoFocus
-          defaultValue={user.nome}
+          defaultValue={user?.nome}
         />
         <ControllerTextInput
           control={control}
           name="email"
           label="E-mail"
           placeholder="Digite seu email"
-          defaultValue={user.email}
+          defaultValue={user?.email}
         />
         <div className="mt-4">
-          <UploadAvatar onHandleSelectedAvatar={setAvatar} />
+          <UploadAvatar title="Selecione um foto para o seu perfil" onHandleSelectedAvatar={setAvatar} />
         </div>
         <Button text="Salvar alterações" className="mt-4" isLoading={loading} />
       </form>

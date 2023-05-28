@@ -6,7 +6,7 @@ import { ControllerTextInput } from "../../ControllerTextInput";
 import { useState } from "react";
 import { passwordSchemaValidator } from "../../../validations/user";
 import { useAuth } from "../../../hooks/useAuth";
-import { updateUser } from "../../../services/update-user";
+import { updateUser } from "../../../services/user/update-user";
 import { useToast } from "../../../hooks/useToast";
 import { Button } from "../../Button";
 import { useSession } from "../../../hooks/useSession";

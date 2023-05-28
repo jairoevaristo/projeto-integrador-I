@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { User } from "../../types/User";
 import { api } from "../../server/api";
@@ -7,12 +7,13 @@ import { api } from "../../server/api";
 import { AuthContext } from "./AuthContext";
 
 import { useToast } from "../../hooks/useToast";
-import { loginUser } from "../../services/login-user";
+import { loginUser } from "../../services/user/login-user";
 
-import { currentUserData } from "../../services/me";
-import { deleteUser } from "../../services/delete-user";
+import { currentUserData } from "../../services/user/me";
+import { deleteUser } from "../../services/user/delete-user";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const { pathname } = useLocation()
   const { handleToast } = useToast();
   const navigate = useNavigate();
 
@@ -72,7 +73,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await currentUserData();
       setUser(response[0]);
-      navigate("/app");
+
+      if (pathname === '/') {
+        navigate('/app')
+      }
+
     } catch (err: any) {
       console.log({ err });
       navigate("/");

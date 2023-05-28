@@ -1,5 +1,6 @@
 import { DribbbleLogo, House, Power, User, Users } from "phosphor-react";
 import { Link, useLocation } from "react-router-dom";
+
 import { useAuth } from "../hooks/useAuth";
 
 import { Menu } from "./Menu";
@@ -40,21 +41,23 @@ export const Header: React.FC = () => {
         </Link>
       </div>
 
-      <div className="flex items-center gap-4">
-        <ProfileAvatar name={user.nome} avatar_url={user.imagem} />
-        <span className="text-white text-md tracking-wider w-38 truncate ...">
-          Olá, {user.nome}
+      <div className="flex items-center">
+        <ProfileAvatar name={user?.nome} avatar_url={user?.imagem} />
+        <span className="text-white text-md tracking-wider ml-4 w-38 truncate ...">
+          Olá, {user?.nome}
         </span>
 
         <div>
           <Menu
             items={[
               {
+                id: 1,
                 name: "Minha conta",
                 icon: <User className="text-white" size={20} />,
-                href: "/profile",
+                href: "/app/profile",
               },
               {
+                id: 2,
                 name: "Sair",
                 icon: <Power className="text-white" size={20} />,
                 onClick: signOut,
