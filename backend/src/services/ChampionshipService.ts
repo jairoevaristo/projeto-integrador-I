@@ -14,4 +14,24 @@ export class ChampionshipService {
             return [];
         }
     }
+
+    async getAllChampionship() {
+        try {
+            const championship = await this.championshipRepository.getAllChampionship()
+            return championship;
+        } catch (error) {
+            new AppLogger().error(error);
+            return [];
+        }
+    }
+
+    async getChampionshipByName(name: string) {
+        try {
+            const championship = await this.championshipRepository.getChampionshipByName(name);
+            return championship;
+        } catch (error) {
+            new AppLogger().error(error);
+            return [];
+        }
+    }
 }

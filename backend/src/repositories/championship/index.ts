@@ -50,4 +50,22 @@ export class ChampionshipRepository {
 
     return createChampionship as ChampionshipDTO[];
   }
+
+  async getAllChampionship() {
+    const championship = await this.prisma.$queryRaw`
+      SELECT * FROM campeonatos;
+    `;
+
+    return championship as ChampionshipDTO[]
+  }
+
+  async getChampionshipByName(name: string) {
+    const searchNameFormat = "%" + name + "%"
+
+    const championship = await this.prisma.$queryRaw`
+      SELECT * FROM campeonatos WHERE nome LIKE ${searchNameFormat};
+    `;
+
+    return championship as ChampionshipDTO[]
+  }
 }
