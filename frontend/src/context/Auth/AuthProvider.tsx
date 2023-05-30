@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState("");
+  const [loadingStorage, setLoadingStorage] = useState(false);
 
   useEffect(() => {
     loadTokenStorageData();
@@ -57,11 +58,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const loadTokenStorageData = () => {
+    setLoadingStorage(true);
+
     const storage = localStorage.getItem("authToken");
     if (storage) {
       const token = JSON.parse(storage) as string;
       setToken(token);
       api.defaults.headers.common["authorization"] = `Bearer ${token}`;
+      setLoadingStorage(false);
     } else {
       navigate("/");
     }
@@ -103,7 +107,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user: user!, signIn, signOut, loading, token, deleteUserAccount, me }}
+      value={{ user: user!, signIn, signOut, loading, token, deleteUserAccount, me, loadingStorage }}
     >
       {children}
     </AuthContext.Provider>

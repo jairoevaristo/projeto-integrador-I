@@ -55,6 +55,7 @@ export const Header: React.FC = () => {
                 name: "Minha conta",
                 icon: <User className="text-white" size={20} />,
                 href: "/app/profile",
+                onClick: () => {}
               },
               {
                 id: 2,

@@ -9,6 +9,7 @@ export type AuthContextType = {
 	token: string;
 	deleteUserAccount: () => void;
 	me: () => void;
+	loadingStorage: boolean
 };
 
 export const AuthContext = createContext<AuthContextType>(null!);

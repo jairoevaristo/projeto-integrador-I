@@ -1,13 +1,20 @@
 import { MagnifyingGlass, Plus } from "phosphor-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "../components/Button";
 import { Layout } from "../components/Layout";
 import { ListChampions } from "../components/ListChampions";
+import { Table } from "../components/Table";
 import { TextInput } from "../components/TextInput";
+import { useDebounce } from "../hooks/useDebounce";
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
+
+  const [searchChampionship, setSearchChampionship] = useState('');
+
+  const searchChampionshipDebounce = useDebounce(searchChampionship);
 
   return (
     <Layout>
@@ -28,13 +35,15 @@ export const Home: React.FC = () => {
           <div className="flex-1 flex items-center justify-end">
             <div className="w-96">
               <TextInput
+                onChange={(e) => setSearchChampionship(e.target.value)}
                 placeholder="Buscar campeonato..."
                 rightIcon={<MagnifyingGlass className="text-white" size={20} />}
               />
             </div>
           </div>
+              
         </div>
-        <ListChampions />
+        <ListChampions searchNameChampionShip={searchChampionshipDebounce} />
       </div>
     </Layout>
   );

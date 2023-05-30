@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from "react";
+import { Fragment, ReactNode, useRef } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { CaretDown } from "phosphor-react";
 import { ButtonMenu } from "./ButtonMenu";
@@ -8,7 +8,7 @@ export type ButtonMenuItem = {
   name: string;
   icon?: ReactNode;
   href?: string;
-  onClick?: () => void;
+  onClick: () => void;
 };
 
 type MenuProps = {
