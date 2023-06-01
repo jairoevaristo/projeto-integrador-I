@@ -8,6 +8,9 @@ import { Profile } from "../pages/Profile";
 
 import { SignIn } from "../pages/SignIn";
 import { SignUp } from "../pages/SignUp";
+import { Teams } from "../pages/Teams";
+import { AddTeam } from "../pages/AddTeam";
+import { UpdateTeam } from "../pages/UpdateTeam";
 
 const Router = () => {
   return (
@@ -38,6 +41,33 @@ const Router = () => {
         element={
           <PrivateRouter>
             <CriarCampeonato />
+          </PrivateRouter>
+        }
+      />
+
+      <Route
+        path="/app/times"
+        element={
+          <PrivateRouter>
+            <Teams />
+          </PrivateRouter>
+        }
+      />
+
+      <Route
+        path="/app/criar-time"
+        element={
+          <PrivateRouter>
+            <AddTeam />
+          </PrivateRouter>
+        }
+      />
+
+      <Route
+        path="/app/atualizar-time"
+        element={
+          <PrivateRouter>
+            <UpdateTeam />
           </PrivateRouter>
         }
       />

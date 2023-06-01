@@ -37,5 +37,6 @@ export function useUploadImageProfile() {
     avatar,
     handleUploadFile,
     previewUploadFile,
+    setPreviewUploadFile
   };
 }

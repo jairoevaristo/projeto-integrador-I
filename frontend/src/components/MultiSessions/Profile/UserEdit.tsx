@@ -17,9 +17,7 @@ export const UserEdit: React.FC = () => {
   const { setProfileSession } = useSession();
   
   const [loading, setLoading] = useState(false);
-  const [avatar, setAvatar] = useState<File[] | null>(
-    user?.imagem ? [new File([user.imagem], 'avatar')] : null
-  );
+  const [avatar, setAvatar] = useState<File[] | null>(null);
 
   const { control, handleSubmit } = useForm({
     resolver: yupResolver(profileSchemaValidator),
@@ -28,13 +26,19 @@ export const UserEdit: React.FC = () => {
   const onSubmit = (data: any) => {
     setLoading(true);
 
-    const userData = { ...user, ...data, avatar };
+    let userData = { ...user, ...data, senha: null, imagem: avatar };
     delete userData.confirmar_senha;
+
+    if(avatar === null) {
+      delete userData.imagem;
+      userData = { ...userData, imagem: user?.imagem}
+    }
 
     updateUser(userData)
       .then((response) => {
         handleToast(response.message);
         me();
+        setProfileSession(0);
       })
       .catch((err) => {
         handleToast(err.response?.data?.message);
@@ -64,9 +68,9 @@ export const UserEdit: React.FC = () => {
           defaultValue={user?.email}
         />
         <div className="mt-4">
-          <UploadAvatar title="Selecione um foto para o seu perfil" onHandleSelectedAvatar={setAvatar} />
+          <UploadAvatar title="Selecione um foto para o seu perfil" onHandleSelectedAvatar={setAvatar} value={user?.imagem} />
         </div>
-        <Button text="Salvar alterações" className="mt-4" isLoading={loading} />
+        <Button text="Salvar alterações" className="mt-4" isLoading={loading}/>
       </form>
       <div className="flex items-center justify-end my-6">
         <div className="flex items-center hover:border-b gap-2 transition-all">

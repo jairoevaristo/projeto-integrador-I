@@ -12,6 +12,8 @@ export class UpdateUserController {
     const userRepository = new UserRepository(prisma);
     const userService = new UserService(userRepository);
 
+    console.log(senha);
+
     const user = await userService.update(
       {
         ativo,

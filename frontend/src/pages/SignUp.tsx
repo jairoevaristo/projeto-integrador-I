@@ -29,7 +29,7 @@ export const SignUp: React.FC = () => {
   const onSubmit = (data: any) => {
     setLoading(true);
 
-    const userData = { ...data, avatar };
+    const userData = { ...data, imagem: avatar };
     delete userData.confirmar_senha;
 
     createUser(userData)

@@ -25,7 +25,7 @@ export const Header: React.FC = () => {
         </RenderConditional>
 
         <Link
-          to="/app"
+          to="/app/times"
           className="text-white text-lg flex gap-2 items-center hover:border-b-blue-300 hover:border-b-2 transition-all"
         >
           <Users className="text-white" size={26} />

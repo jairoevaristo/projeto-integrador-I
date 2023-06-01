@@ -8,11 +8,13 @@ import { SpinnerLoading } from "./SpinnerLoading";
 interface UploadAvatarProps {
   onHandleSelectedAvatar: (base64: File[] | null) => void;
   title: string;
+  value?: string;
 }
 
 export const UploadAvatar: React.FC<UploadAvatarProps> = ({
   onHandleSelectedAvatar,
-  title
+  title,
+  value,
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [isVisibleImageGallery, setIsVisibleImageGallery] = useState(false);
@@ -23,7 +25,14 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({
     loadingUploadFile,
     previewUploadFile,
     avatar,
+    setPreviewUploadFile
   } = useUploadImageProfile();
+
+  useEffect(() => {
+    if (value) {
+      setPreviewUploadFile(value);
+    }
+  }, []);
 
   useEffect(() => {
     if (avatar) {
@@ -79,7 +88,7 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({
           </RenderConditional>
 
           <RenderConditional
-            condition={!errorImage && !!previewUploadFile && !loadingUploadFile}
+            condition={!errorImage && !loadingUploadFile && !!previewUploadFile}
           >
             <div className="flex relative">
               <div className="flex items-center justify-center flex-col">

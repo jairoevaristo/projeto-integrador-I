@@ -1,95 +1,138 @@
-import { TrashIcon } from "@heroicons/react/24/outline"
-import { PencilSimple } from "phosphor-react"
-import { ReactNode } from "react";
-import { Link } from "react-router-dom"
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { PencilSimple } from "phosphor-react";
+import { ReactNode, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { getChampionshipById } from "../services/championship/get-championship-by-id";
+import { ResponseChampionship } from "../types/ReponseChampionship";
+import { deleteTeam } from "../services/team/delete-team";
+import { useTeam } from "../hooks/useTeam";
+import { useToast } from "../hooks/useToast";
 
 type TableProps = {
-    labels: Array<{ id: string, name: ReactNode }>;
-    data: Array<{ 
-        id: string;
-        name: string;
-        escudo: string;
-        abreviacao: string;
-        campeonato: Array<{ id: string, name: string }>;
-    }>;
+  labels: Array<{ id: string; nome: ReactNode }>;
+  data: Array<{
+    id: string;
+    nome: string;
+    escudo: string;
+    abreviacao: string;
+    campeonatoId: string;
+  }>;
+};
+
+export interface TableDataProps {
+  id: string;
+  nome: string;
+  escudo: string;
+  abreviacao: string;
+  campeonatoId: string;
 }
 
 export const Table: React.FC<TableProps> = ({ data, labels }) => {
-    return (
-        <div className="overflow-hidden rounded-lg border border-gray-800 shadow-md m-5">
-        <table className="w-full border-collapse text-left text-sm text-gray-800">
-            <thead className="bg-zinc-900">
-            <tr>
-                {labels.map(item => (
-                    <th scope="col" className="px-6 py-4 font-medium text-gray-300" key={item.id}>{item.name}</th>
-                ))}
-            </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 border-t border-gray-600">
-                {data.map(item => (
-                    <tr key={item.id}>
-                        <th className="flex gap-3 items-center px-6 py-4 font-normal text-gray-900">
-                            <div className="h-10 w-10">
-                                <img
-                                className="h-full w-full rounded-full object-cover object-center"
-                                src={item.escudo}
-                                alt=""
-                                />
-                            </div>
-                        </th>
-                        <td className="px-6 py-4">
-                        <span
-                            className="inline-flex items-center px-2 py-1"
-                        >
-                            <span className="text-white font-normal text-md">
-                                {item.name}
-                            </span>
-                            
-                        </span>
-                        </td>
-                        <td className="px-6 py-4">
-                            <span className="text-white font-normal text-md">
-                                {item.abreviacao}
-                            </span>
-                        </td>
-                        <td className="px-6 py-4">
-                        <div className="flex gap-2">
-                            {item.campeonato.length > 0 ? (
-                                <div className="flex items-center gap-2">
-                                    {item.campeonato.map(campeonato => (
-                                        <div className="flex items-center gap-4" key={campeonato.id}>
-                                            <span
-                                                className="inline-flex items-center rounded-full text-blue-50 px-2 py-1 text-xs font-semibold bg-blue-600"
-                                            >
-                                                {campeonato.name}
-                                            </span>
-                                    </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="flex items-center justify-center">
-                                    <span className="text-white font-bold text-center ml-8">
-                                        -
-                                    </span>
-                                </div>
-                            ) }
-                        </div>
-                        </td>
-                        <td className="px-6 py-4">
-                            <div className="flex justify-end gap-6">
-                                <Link to="/app">
-                                    <TrashIcon className="text-white h-5 w-5" />
-                                </Link>
+  const [championshipNames, setChampionshipNames] = useState<{
+    [id: string]: string;
+  }>({});
+  const [tableData, setTableData] = useState<TableDataProps[]>([]);
+  const [championName, setChampionName] = useState<ResponseChampionship>();
+  const { setTeam } = useTeam();
+  const { handleToast } = useToast();
 
-                                <Link to="/app">
-                                    <PencilSimple className="text-white h-5 w-5" />
-                                </Link>
-                            </div>
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-        </div>
-    )
-}
+  useEffect(() => {
+    setTableData(data);
+  }, [data]);
+
+  const deleteTeamItem = async (teamId: string) => {
+    await deleteTeam(teamId);
+    const updatedData = tableData.filter((item) => item.id !== teamId);
+    handleToast("Time excluído com sucesso!");
+    setTableData(updatedData);
+  };
+
+  const findChampionById = (id: string) => {
+    getChampionshipById(id)
+        .then((response) => {
+            setChampionName(response);
+        })
+        .catch((err) => handleToast(err.response?.data?.message))
+  };
+
+  return (
+    <div className="w-full overflow-hidden rounded-lg border border-gray-800 shadow-md m-5">
+      <table className="w-full border-collapse text-left text-sm text-gray-800">
+        <thead className="bg-zinc-900">
+          <tr>
+            {labels.map((item) => (
+              <th
+                scope="col"
+                className="px-6 py-4 font-medium text-gray-300"
+                key={item.id}
+              >
+                {item.nome}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100 border-t border-gray-600">
+          {tableData.map((item) => (
+            <tr key={item.id}>
+              <th className="flex gap-3 items-center px-6 py-4 font-normal text-gray-900">
+                <div className="h-10 w-10">
+                  <img
+                    className="h-full w-full rounded-full object-cover object-center"
+                    src={item.escudo}
+                    alt=""
+                  />
+                </div>
+              </th>
+              <td className="px-6 py-4">
+                <span className="inline-flex items-center py-1">
+                  <span className="text-white font-normal text-md">
+                    {item.nome}
+                  </span>
+                </span>
+              </td>
+              <td className="px-6 py-4">
+                <span className="text-white font-normal text-md">
+                  {item.abreviacao}
+                </span>
+              </td>
+              <td className="px-6 py-4">
+                <div className="flex gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-4">
+                      {item.campeonatoId === null || item.campeonatoId ? (
+                        <span className="inline-flex items-center rounded-full text-blue-50 px-2 py-1 text-xs font-medium tracking-[-0.1em]">
+                          ---
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-full text-blue-50 px-2 py-1 text-xs font-semibold bg-blue-600">
+                          
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                <div className="flex justify-end gap-6">
+                  <Link to="/app/times">
+                    <TrashIcon
+                      onClick={() => deleteTeamItem(item.id)}
+                      className="text-white h-5 w-5"
+                    />
+                  </Link>
+
+                  <Link to="/app/atualizar-time">
+                    <PencilSimple
+                      onClick={() => setTeam(item)}
+                      className="text-white h-5 w-5"
+                    />
+                  </Link>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};

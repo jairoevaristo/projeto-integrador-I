@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       handleToast(response.message);
       localStorage.setItem("authToken", JSON.stringify(response.token));
       setUser(response.user);
+      loadTokenStorageData();
       navigate("/app");
     } catch (err: any) {
       handleToast(err.response?.data?.message);
@@ -54,6 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("authToken");
     setUser(null);
     setToken("");
+    setLoading(false);
     navigate("/");
   };
 
@@ -107,7 +109,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user: user!, signIn, signOut, loading, token, deleteUserAccount, me, loadingStorage }}
+      value={{ user: user!, setUser, signIn, signOut, loading, token, deleteUserAccount, me, loadingStorage }}
     >
       {children}
     </AuthContext.Provider>

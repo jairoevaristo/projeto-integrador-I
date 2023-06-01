@@ -4,15 +4,18 @@ import Router from "./routes/index.js"
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './context/Auth/AuthProvider.js';
 import { SessionProvider } from './context/Session/SessionProvider.js';
+import { TeamProvider } from './context/Team/TeamProvider.js';
 
 function App() {
 	return (
 		<div className='flex w-full min-h-screen bg-black'>
 			<AuthProvider>
-				<SessionProvider>
-					<Router/>
-					<ToastContainer />
-				</SessionProvider>
+				<TeamProvider>
+					<SessionProvider>
+						<Router/>
+						<ToastContainer/>
+					</SessionProvider>
+				</TeamProvider>
 			</AuthProvider>
 		</div>
 	);

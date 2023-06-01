@@ -5,7 +5,16 @@ import { ChampionshipDTO } from "../../dtos/championship/championship";
 import { CreateChampionshipDTO } from "../../dtos/championship/createChampionship";
 
 export class ChampionshipRepository {
-    constructor(private prisma: PrismaClient) {}
+  async getChampionshipById(id: string) {
+    const searchIdFormat = "%" + id + "%"
+
+    const championship = await this.prisma.$queryRaw`
+      SELECT * FROM campeonatos WHERE id LIKE ${searchIdFormat};
+    `;
+
+    return championship as ChampionshipDTO[]
+  }
+  constructor(private prisma: PrismaClient) {}
 
   async save({
     dataFim,

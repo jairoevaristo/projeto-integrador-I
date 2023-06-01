@@ -60,11 +60,20 @@ export class UserRepository {
   }
 
   async update(user: updateUserDTO, id: string) {
-    const userUpdate = await this.prisma.$queryRaw`
-			UPDATE 'main'.'usuarios' SET 'nome' = ${user.nome}, 'email' = ${user.email}, 
-			'senha' = ${user.senha}, 'imagem' = ${user.imagem}, 'ativo' = ${user.ativo} 
-			WHERE 'main'.'usuarios'.'id' = ${id};
-		`;
+    let query = this.prisma.$queryRaw`
+      UPDATE 'main'.'usuarios' SET 'nome' = ${user.nome}, 'email' = ${user.email}, 
+      'imagem' = ${user.imagem}, 'ativo' = ${user.ativo} WHERE 'main'.'usuarios'.'id' = ${id}
+    `;
+  
+    if (user.senha !== null) {
+      query = this.prisma.$queryRaw`
+        UPDATE 'main'.'usuarios' SET 'nome' = ${user.nome}, 'email' = ${user.email}, 
+        'senha' = ${user.senha}, 'imagem' = ${user.imagem}, 'ativo' = ${user.ativo} 
+        WHERE 'main'.'usuarios'.'id' = ${id}
+      `;
+    }
+  
+    const userUpdate = await query;
     return userUpdate;
   }
 

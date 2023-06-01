@@ -34,4 +34,14 @@ export class ChampionshipService {
             return [];
         }
     }
+
+    async getChampionshipById(id: string) {
+        try {
+            const championship = await this.championshipRepository.getChampionshipById(id);
+            return championship;
+        } catch (error) {
+            new AppLogger().error(error);
+            return [];
+        }
+    }
 }

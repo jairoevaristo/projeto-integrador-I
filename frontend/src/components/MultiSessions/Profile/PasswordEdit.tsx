@@ -30,8 +30,6 @@ export const PasswordEdit: React.FC = () => {
     const userData = { ...user, ...data };
     delete userData.confirmar_senha;
 
-    console.log(user);
-
     updateUser(userData)
       .then(() => {
         handleToast("Senha atualizada com sucesso!");

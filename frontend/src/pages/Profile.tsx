@@ -1,5 +1,4 @@
 import { Layout } from "../components/Layout";
-import { useAuth } from "../hooks/useAuth";
 import { RenderConditional } from "../components/RenderConditional";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
@@ -11,7 +10,6 @@ import { PasswordEdit } from "../components/MultiSessions/Profile/PasswordEdit";
 
 export const Profile: React.FC = () => {
   const { profileSession, setProfileSession } = useSession();
-  const { user, loading, token } = useAuth();
 
   useEffect(() => {
     setProfileSession(0);
