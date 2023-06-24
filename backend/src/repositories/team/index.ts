@@ -9,9 +9,7 @@ export class TeamRepository {
   delete(id: string) {
       throw new Error("Method not implemented.");
   }
-  getTeamById(id: string) {
-    throw new Error("Method not implemented.");
-  }
+  
   constructor(private prisma: PrismaClient) {}
 
   async save({
@@ -56,6 +54,14 @@ export class TeamRepository {
 
     const team = await this.prisma.$queryRaw`
       SELECT * FROM times WHERE nome LIKE ${searchNameFormat};
+    `;
+
+    return team as TeamDTO[];
+  }
+
+  async getTeamById(id: string) {
+    const team = await this.prisma.$queryRaw`
+      SELECT * FROM times WHERE id = ${id};
     `;
 
     return team as TeamDTO[];
