@@ -36,6 +36,17 @@ export class TeamService {
         }
     }
 
+    async getTeamById(id: string) {
+        try {
+            const team = await this.teamRepository.getTeamById(id);
+
+            return team;
+        } catch (error) {
+            new AppLogger().error(error);
+            return [];
+        }
+    }
+
     async delete(id: string) {
         try {
             const teamDelete = await this.teamRepository.deleteTeam(id);

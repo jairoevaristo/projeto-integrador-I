@@ -27,4 +27,20 @@ export class EnrollmentRepository {
 
     return createEnrollment as EnrollmentDTO[];
   }
+
+  async getEnrollmentByChampionshipAndTeam(campeonatoId: string, timeId: string) {    
+    const enrollment = await this.prisma.$queryRaw`
+      SELECT * FROM inscricao_campeonato WHERE campeonatoId = ${campeonatoId} and timeId = ${timeId};
+    `;
+
+    return enrollment as EnrollmentDTO[];
+  }
+
+  async deleteEnrollment(id: string) {
+    const enrollmentDelete = await this.prisma.$queryRaw`
+			DELETE FROM 'main'.'inscricao_campeonato' 
+			WHERE 'main'.'inscricao_campeonato'.'id' = ${id};
+		`;
+    return enrollmentDelete;
+  }
 }
