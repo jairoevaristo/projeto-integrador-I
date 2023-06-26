@@ -67,6 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const token = JSON.parse(storage) as string;
       setToken(token);
       api.defaults.headers.common["authorization"] = `Bearer ${token}`;
+      console.log(token);
       setLoadingStorage(false);
     } else {
       navigate("/");
