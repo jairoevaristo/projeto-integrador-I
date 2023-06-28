@@ -1,5 +1,5 @@
 import { ToastContainer } from 'react-toastify';
-import Router from "./routes/index.js"
+import Router from "./routes"
 
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './context/Auth/AuthProvider.js';

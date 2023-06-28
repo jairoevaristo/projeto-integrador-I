@@ -20,7 +20,7 @@ export const CardChampions: React.FC<CardChampionsProps> = ({
   const formatedDescripton = description.length > 70 ? description.slice(0, 85) + '...' : description;
 
   return (
-    <Link to="/red">
+    <Link to={`/app/detalhe-campeonato/${id}`}>
       <div className="bg-zinc-900 rounded-md px-4 pt-3 w-full h-52 hover:translate-y-[-4px] cursor-pointer transition-all hover:bg-zinc-800">
           <div className="flex flex-col gap-3">
               <h1 className="text-white font-semibold text-xl">{name}</h1>

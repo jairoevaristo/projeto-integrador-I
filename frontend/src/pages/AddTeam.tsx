@@ -1,3 +1,4 @@
+import { ArrowLeft } from "phosphor-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
@@ -49,7 +50,15 @@ export const AddTeam: React.FC = () => {
         <Layout>
             <div className="mt-10 bg-zinc-900 p-8 rounded-md">
                 <div className="flex flex-col border-b border-gray-700 pb-2">
-                    <h1 className="text-3xl mb-2 font-normal text-white">Crie um time</h1>
+                    <div className="flex items-center mb-4 gap-3">
+                        <button
+                            onClick={() => navigate('/app')}
+                            className="h-10 w-10 border border-gray-200 rounded-full flex items-center justify-center hover:bg-white group transition-colors"
+                        >
+                            <ArrowLeft className="text-white w-5 h-5 group-hover:text-black transition-colors" />
+                        </button>
+                        <h1 className="text-3xl font-normal text-white">Crie um time</h1>
+                    </div>
                     <h1 className="text-md text-white">Preencha as informações abaixo para criar um novo time.</h1>
                 </div>
 

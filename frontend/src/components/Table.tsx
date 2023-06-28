@@ -2,14 +2,13 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import { PencilSimple } from "phosphor-react";
 import { ReactNode, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getChampionshipById } from "../services/championship/get-championship-by-id";
-import { ResponseChampionship } from "../types/ReponseChampionship";
 import { deleteTeam } from "../services/team/delete-team";
 import { useTeam } from "../hooks/useTeam";
 import { useToast } from "../hooks/useToast";
 
 type TableProps = {
   labels: Array<{ id: string; nome: ReactNode }>;
+  isEdit?: boolean
   data: Array<{
     id: string;
     nome: string;
@@ -27,12 +26,8 @@ export interface TableDataProps {
   campeonatoId: string;
 }
 
-export const Table: React.FC<TableProps> = ({ data, labels }) => {
-  const [championshipNames, setChampionshipNames] = useState<{
-    [id: string]: string;
-  }>({});
+export const Table: React.FC<TableProps> = ({ data, labels, isEdit = true }) => {
   const [tableData, setTableData] = useState<TableDataProps[]>([]);
-  const [championName, setChampionName] = useState<ResponseChampionship>();
   const { setTeam } = useTeam();
   const { handleToast } = useToast();
 
@@ -47,16 +42,8 @@ export const Table: React.FC<TableProps> = ({ data, labels }) => {
     setTableData(updatedData);
   };
 
-  const findChampionById = (id: string) => {
-    getChampionshipById(id)
-        .then((response) => {
-            setChampionName(response);
-        })
-        .catch((err) => handleToast(err.response?.data?.message))
-  };
-
   return (
-    <div className="w-full overflow-hidden rounded-lg border border-gray-800 shadow-md m-5">
+    <div className="w-full overflow-hidden rounded-lg border border-gray-800 shadow-md">
       <table className="w-full border-collapse text-left text-sm text-gray-800">
         <thead className="bg-zinc-900">
           <tr>
@@ -105,7 +92,7 @@ export const Table: React.FC<TableProps> = ({ data, labels }) => {
                         </span>
                       ) : (
                         <span className="inline-flex items-center rounded-full text-blue-50 px-2 py-1 text-xs font-semibold bg-blue-600">
-                          
+                          {item.campeonatoId}
                         </span>
                       )}
                     </div>
@@ -113,21 +100,25 @@ export const Table: React.FC<TableProps> = ({ data, labels }) => {
                 </div>
               </td>
               <td className="px-6 py-4">
-                <div className="flex justify-end gap-6">
-                  <Link to="/app/times">
-                    <TrashIcon
-                      onClick={() => deleteTeamItem(item.id)}
-                      className="text-white h-5 w-5"
-                    />
-                  </Link>
-
-                  <Link to="/app/atualizar-time">
-                    <PencilSimple
-                      onClick={() => setTeam(item)}
-                      className="text-white h-5 w-5"
-                    />
-                  </Link>
-                </div>
+                {
+                  isEdit && (
+                    <div className="flex justify-end gap-6">
+                      <Link to="/app/times">
+                        <TrashIcon
+                          onClick={() => deleteTeamItem(item.id)}
+                          className="text-white h-5 w-5"
+                        />
+                      </Link>
+    
+                      <Link to="/app/atualizar-time">
+                        <PencilSimple
+                          onClick={() => setTeam(item)}
+                          className="text-white h-5 w-5"
+                        />
+                      </Link>
+                    </div>
+                  )
+                }
               </td>
             </tr>
           ))}

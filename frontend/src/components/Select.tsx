@@ -3,7 +3,7 @@ import { ButtonMenuItem, Menu } from "./Menu"
 
 type SelectProps = {
     label: string;
-    placeholder: string;
+    placeholder: string | undefined;
     options: ButtonMenuItem[];
     icon?: ReactNode;
 }

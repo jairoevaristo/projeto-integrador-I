@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import { PrivateRouter } from "../components/PrivateRouter";
-import { useAuth } from "../hooks/useAuth";
 import { CriarCampeonato } from "../pages/CriarCampeonato";
 import { Home } from "../pages/Home";
 import { Profile } from "../pages/Profile";
@@ -11,6 +10,7 @@ import { SignUp } from "../pages/SignUp";
 import { Teams } from "../pages/Teams";
 import { AddTeam } from "../pages/AddTeam";
 import { UpdateTeam } from "../pages/UpdateTeam";
+import { ChampionshipDetails } from "../pages/ChampionshipDetails";
 
 const Router = () => {
   return (
@@ -68,6 +68,15 @@ const Router = () => {
         element={
           <PrivateRouter>
             <UpdateTeam />
+          </PrivateRouter>
+        }
+      />
+
+      <Route
+        path="/app/detalhe-campeonato/:id"
+        element={
+          <PrivateRouter>
+            <ChampionshipDetails />
           </PrivateRouter>
         }
       />
