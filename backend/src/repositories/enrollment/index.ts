@@ -36,6 +36,23 @@ export class EnrollmentRepository {
     return enrollment as EnrollmentDTO[];
   }
 
+  async getEnrollmentByChampionship(campeonatoId: string) {   
+    const enrollments = await this.prisma.$queryRaw`
+      SELECT
+        T.escudo,
+        T.nome,
+        T.abreviacao,
+        C.nome AS "nomeCampeonato"
+      FROM
+        inscricao_campeonato IC
+        INNER JOIN times T ON T.id = IC."timeId"
+        INNER JOIN campeonatos C ON C.id = IC."campeonatoId"        
+      WHERE C.id = ${campeonatoId};
+    `;
+
+    return enrollments as EnrollmentDTO[];
+  }
+
   async deleteEnrollment(id: string) {
     const enrollmentDelete = await this.prisma.$queryRaw`
 			DELETE FROM 'main'.'inscricao_campeonato' 

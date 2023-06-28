@@ -7,12 +7,12 @@ import { EnrollmentService } from "../../services/EnrollmentService";
 
 export class DeleteEnrollmentController {
   async execute(req: Request, res: Response) {
-    const { id } = req.body;
+    const { enrollmentId } = req.body;
 
     const enrollmentRepository = new EnrollmentRepository(prisma);
     const enrollmentService = new EnrollmentService(enrollmentRepository);
 
-    const enrollmentDelete = await enrollmentService.delete(id);
+    const enrollmentDelete = await enrollmentService.delete(enrollmentId);
     
     if (!enrollmentDelete) {
         return res.send({ message: "Houve um erro ao apagar a inscrição!" }).status(200);
