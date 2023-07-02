@@ -43,7 +43,18 @@ export class TeamRepository {
 
   async getAllTeams() {
     const teams = await this.prisma.$queryRaw`
-      SELECT * FROM times;
+      SELECT
+        T.id,
+        T.nome,
+        T.abreviacao,
+        T.escudo,
+        GROUP_CONCAT(C.nome, '; ') AS "campeonatos"
+      FROM
+        "times" T
+        LEFT JOIN "inscricao_campeonato" IC ON IC.timeId = T.id
+        LEFT JOIN "campeonatos" C ON C.id = IC.campeonatoId
+      GROUP BY
+        T.id;
     `;
 
     return teams as TeamDTO[];

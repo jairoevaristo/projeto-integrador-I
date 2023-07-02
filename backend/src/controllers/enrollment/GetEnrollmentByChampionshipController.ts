@@ -5,14 +5,14 @@ import { prisma } from "../../infra/database/prisma";
 import { EnrollmentRepository } from "../../repositories/enrollment";
 import { EnrollmentService } from "../../services/EnrollmentService";
 
-export class GetEnrollmentByChampionshipAndTeamController {
+export class GetEnrollmentByChampionshipController {
     async execute(req: Request, res: Response) {
-        const { campeonatoId, timeId } = req.body;
+        const { campeonatoId } = req.body;
 
         const enrollmentRepository = new EnrollmentRepository(prisma);
         const enrollmentService = new EnrollmentService(enrollmentRepository); 
 
-        const enrollment = await enrollmentService.getEnrollmentByChampionshipAndTeam(campeonatoId, timeId);
-        return res.status(200).json(enrollment);
+        const enrollments = await enrollmentService.getEnrollmentByChampionship(campeonatoId);
+        return res.status(200).json(enrollments);
     }
 }
