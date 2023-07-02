@@ -13,6 +13,8 @@ import { ChampionshipService } from "../../services/ChampionshipService";
 
 export class CreateEnrollmentController {
     async execute(req: Request, res: Response) {
+        const { campeonatoId, timeIds }: { campeonatoId: string, timeIds: string[] } = req.body;
+
         const enrollmentRepository = new EnrollmentRepository(prisma);
         const enrollmentService = new EnrollmentService(enrollmentRepository);
 
@@ -22,49 +24,43 @@ export class CreateEnrollmentController {
         const teamRepository = new TeamRepository(prisma);
         const teamService = new TeamService(teamRepository);
 
-        const enrollmentsToCreate: CreateEnrollmentDTO[] = req.body;
-
         const errors: string[] = [];
         const createdEnrollments: CreateEnrollmentDTO[] = [];
 
-        await Promise.all(
-            enrollmentsToCreate.map(async (createEnrollment) => {
-                const isChampionshipExists = await championshipService.getChampionshipById(createEnrollment.campeonatoId);
+        const isChampionshipExists = await championshipService.getChampionshipById(campeonatoId);
 
-                if (isChampionshipExists?.length <= 0) {
-                    errors.push(`Nenhum campeonato encontrado para o time com ID ${createEnrollment.timeId}`);
-                    return;
-                }
+        if (isChampionshipExists?.length <= 0) {
+            return res.status(400).json({ error: `Nenhum campeonato encontrado para o ID ${campeonatoId}` });
+        }
+        else {
+            await Promise.all(
+                timeIds.map(async (timeId) => {
+                    const isTeamExists = await teamService.getTeamById(timeId);
+                    
+                    if (isTeamExists?.length <= 0) {
+                        errors.push(`Nenhum time encontrado com ID ${timeId}`);
+                        return;
+                    }
 
-                const isTeamExists = await teamService.getTeamById(createEnrollment.timeId);
+                    const isEnrollmentExists = await enrollmentService.getEnrollmentByChampionshipAndTeam(campeonatoId, timeId);
 
-                if (isTeamExists?.length <= 0) {
-                    errors.push(`Nenhum time encontrado com ID ${createEnrollment.timeId}`);
-                    return; 
-                }
+                    if (isEnrollmentExists?.length > 0) {
+                        errors.push(`Time com ID ${timeId} já está cadastrado no campeonato`);
+                        return;
+                    }
 
-                const isEnrollmentExists = await enrollmentService.getEnrollmentByChampionshipAndTeam(createEnrollment.campeonatoId, createEnrollment.timeId);
+                    const createEnrollment: CreateEnrollmentDTO = { campeonatoId, timeId };
+                    await enrollmentService.save(createEnrollment);
 
-                if (isEnrollmentExists?.length > 0) {
-                    errors.push(`Time com ID ${createEnrollment.timeId} já está cadastrado no campeonato`);
-                    return; 
-                }
-
-                await enrollmentService.save({
-                    ...createEnrollment
-                });
-
-                createdEnrollments.push({
-                    campeonatoId: createEnrollment.campeonatoId,
-                    timeId: createEnrollment.timeId
-                });                
-            })
-        );
-
-        if (errors.length > 0) {
-            return res.status(400).send({ errors });
+                    createdEnrollments.push(createEnrollment);
+                })
+            );
         }
 
-        return res.send({ message: 'Inscrições realizadas com sucesso.', createdEnrollments }).status(201);
+        if (errors.length > 0) {
+            return res.status(400).json({ errors });
+        }
+
+        return res.status(201).json({ message: 'Inscrições realizadas com sucesso.', createdEnrollments });
     }
 }
