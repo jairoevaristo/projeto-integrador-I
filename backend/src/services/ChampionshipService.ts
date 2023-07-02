@@ -39,7 +39,7 @@ export class ChampionshipService {
         try {
             const championship = await this.championshipRepository.getChampionshipById(id);
             
-            return championship[0];
+            return championship;
         } catch (error) {
             new AppLogger().error(error);
             return [];
