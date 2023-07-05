@@ -29,12 +29,15 @@ export class CreateEnrollmentController {
 
         const isChampionshipExists = await championshipService.getChampionshipById(campeonatoId);
 
+        if(timeIds?.length <= 0 || !timeIds) {
+            return res.status(400).json({ error: `Nenhum time informado` });
+        }
         if (isChampionshipExists?.length <= 0) {
             return res.status(400).json({ error: `Nenhum campeonato encontrado para o ID ${campeonatoId}` });
         }
         else {
             await Promise.all(
-                timeIds.map(async (timeId) => {
+                timeIds?.map(async (timeId) => {
                     const isTeamExists = await teamService.getTeamById(timeId);
                     
                     if (isTeamExists?.length <= 0) {

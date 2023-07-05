@@ -45,4 +45,14 @@ export class EnrollmentService {
             return [];
         }
     }
+
+    async getEnrollmentByTeam(timeId: string) {
+        try {            
+            const enrollments = await this.enrollmentRepository.getEnrollmentByTeam(timeId);
+            return enrollments;
+        } catch (error) {
+            new AppLogger().error(error);
+            return [];
+        }
+    }
 }

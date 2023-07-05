@@ -1,20 +1,27 @@
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { PencilSimple } from "phosphor-react";
-import { ReactNode, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Fragment, ReactNode, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { deleteTeam } from "../services/team/delete-team";
 import { useTeam } from "../hooks/useTeam";
 import { useToast } from "../hooks/useToast";
+import { deleteEnrollment } from "../services/enrollment/delete-enrollment";
+import { getEnrollmentByTeam } from "../services/enrollment/get-enrollment-by-team";
+import { RenderConditional } from "./RenderConditional";
+import { randomColor } from "../utils/random-color";
 
 type TableProps = {
   labels: Array<{ id: string; nome: ReactNode }>;
   isEdit?: boolean
+  isPop?:boolean
+  isEnrollment?: boolean
   data: Array<{
     id: string;
     nome: string;
     escudo: string;
     abreviacao: string;
-    campeonatoId: string;
+    nomeCampeonato?: string;
+    campeonatos?: string;
   }>;
 };
 
@@ -23,23 +30,34 @@ export interface TableDataProps {
   nome: string;
   escudo: string;
   abreviacao: string;
-  campeonatoId: string;
+  nomeCampeonato?: string;
+  campeonatos?: string;
 }
 
-export const Table: React.FC<TableProps> = ({ data, labels, isEdit = true }) => {
+export const Table: React.FC<TableProps> = ({ data, labels, isEdit = true, isPop = true, isEnrollment = false }) => {
   const [tableData, setTableData] = useState<TableDataProps[]>([]);
   const { setTeam } = useTeam();
   const { handleToast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTableData(data);
   }, [data]);
 
-  const deleteTeamItem = async (teamId: string) => {
-    await deleteTeam(teamId);
-    const updatedData = tableData.filter((item) => item.id !== teamId);
-    handleToast("Time excluído com sucesso!");
-    setTableData(updatedData);
+  const deleteTeamItem = async (id: string) => {
+    console.log(id);
+    if(!isEnrollment) {
+      await deleteTeam(id);
+      const updatedData = tableData.filter((item) => item.id !== id);
+      handleToast("Time excluído com sucesso!");
+      setTableData(updatedData);
+      navigate("/app/times");
+    } else {
+      await deleteEnrollment(id);
+      const updatedData = tableData.filter((item) => item.id !== id);
+      handleToast("Inscrição excluída com sucesso!");
+      setTableData(updatedData);
+    }
   };
 
   return (
@@ -86,39 +104,45 @@ export const Table: React.FC<TableProps> = ({ data, labels, isEdit = true }) => 
                 <div className="flex gap-2">
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-4">
-                      {item.campeonatoId === null || item.campeonatoId ? (
+                      <RenderConditional condition={!!item.nomeCampeonato}>
+                        <span style={{ background: `#${randomColor()}` }}  className="inline-flex items-center rounded-full text-blue-50 px-2 py-1 text-xs font-semibold">
+                          {item.nomeCampeonato}
+                        </span>
+                      </RenderConditional>
+                      <RenderConditional condition={!item.nomeCampeonato && !item.campeonatos}>
                         <span className="inline-flex items-center rounded-full text-blue-50 px-2 py-1 text-xs font-medium tracking-[-0.1em]">
                           ---
                         </span>
-                      ) : (
-                        <span className="inline-flex items-center rounded-full text-blue-50 px-2 py-1 text-xs font-semibold bg-blue-600">
-                          {item.campeonatoId}
-                        </span>
-                      )}
+                      </RenderConditional>
+                      <RenderConditional condition={!!item.campeonatos}>
+                        <Fragment>
+                          {item.campeonatos?.split(";").map(nome => (
+                            <span style={{ background: `#${randomColor()}` }} className="inline-flex items-center rounded-full text-blue-50 px-2 py-1 text-xs font-semibold">
+                              {nome}
+                            </span>
+                          ))}
+                        </Fragment>
+                      </RenderConditional>
                     </div>
                   </div>
                 </div>
               </td>
               <td className="px-6 py-4">
-                {
-                  isEdit && (
                     <div className="flex justify-end gap-6">
-                      <Link to="/app/times">
+                      {isPop && (<div className="cursor-pointer">
                         <TrashIcon
                           onClick={() => deleteTeamItem(item.id)}
                           className="text-white h-5 w-5"
                         />
-                      </Link>
+                      </div>)}
     
-                      <Link to="/app/atualizar-time">
+                      {isEdit && (<Link to="/app/atualizar-time">
                         <PencilSimple
                           onClick={() => setTeam(item)}
                           className="text-white h-5 w-5"
                         />
-                      </Link>
+                      </Link>)}
                     </div>
-                  )
-                }
               </td>
             </tr>
           ))}

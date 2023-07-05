@@ -5,6 +5,7 @@ import { getAllChampionship } from "../services/championship/getAll-champions"
 import { ResponseChampionship } from "../types/ReponseChampionship";
 import { CardChampions } from "./CardChampions"
 import { SpinnerLoading } from "./SpinnerLoading";
+import { useChampionship } from "../hooks/useChampionship";
 
 let timeoutRequest: any = null
 
@@ -13,7 +14,9 @@ type ListChampions = {
 }
 
 export const ListChampions: React.FC<ListChampions> = ({ searchNameChampionShip }) => {
-    const { handleToast } = useToast()
+    const { handleToast } = useToast();
+
+    const { setChampionship } = useChampionship();
 
     const [loading, setLoading] = useState(true);
     const [champions, setChampions] = useState<ResponseChampionship[]>([]);
@@ -33,17 +36,14 @@ export const ListChampions: React.FC<ListChampions> = ({ searchNameChampionShip 
     }, []);
 
     useEffect(() => {
-        if (!!searchNameChampionShip) {
-          getChampionshipByName(searchNameChampionShip)
+        if (searchNameChampionShip !== "") {
+            getChampionshipByName(searchNameChampionShip)
             .then((result) => {
-                setSearchChampionship(result)
-          });
-        }
-      }, [searchNameChampionShip]);
-
-      useEffect(() => {
-        if (searchNameChampionShip === '') {
-            setSearchChampionship([])
+                setSearchChampionship(result);
+            })
+            .catch((err) => handleToast(err.response?.data?.message));
+        } else {
+            setSearchChampionship([]);
         }
       }, [searchNameChampionShip]);
 
@@ -74,14 +74,15 @@ export const ListChampions: React.FC<ListChampions> = ({ searchNameChampionShip 
     return (
         <div className="grid grid-cols-3 gap-6 py-6 h-auto overflow-auto rounded-md">
             {
-                resultChampionship.map(({ id, qtdTimes, descricao, situacao, nome } ) => {
+                resultChampionship.map((championship) => {
                     return <CardChampions
-                        key={id}
-                        id={id}
-                        description={descricao}
-                        name={nome}
-                        status={situacao}
-                        total_times={qtdTimes}
+                        key={championship.id}
+                        id={championship.id}
+                        description={championship.descricao}
+                        name={championship.nome}
+                        status={championship.situacao}
+                        total_times={championship.qtdTimes}
+                        onClick={() => setChampionship(championship)}
                     />
                 })
             }

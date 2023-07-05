@@ -3,9 +3,5 @@ export interface ResponseTeam {
   nome: string;
   escudo: string;
   abreviacao: string;
-  campeonatoId: string;
-  campeonato: {
-    id: string;
-    name: string;
-  }[];
+  nomeCampeonato: string;
 }

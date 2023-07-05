@@ -3,6 +3,7 @@ import { v4 } from "uuid";
 
 import { ChampionshipDTO } from "../../dtos/championship/championship";
 import { CreateChampionshipDTO } from "../../dtos/championship/createChampionship";
+import { UpdateChampionshipDTO } from "../../dtos/championship/updateChampionship";
 
 export class ChampionshipRepository {
   
@@ -76,5 +77,25 @@ export class ChampionshipRepository {
     `;
 
     return championship as ChampionshipDTO[]
+  }
+
+  async update(championship: UpdateChampionshipDTO) {
+    const championshipUpdate = await this.prisma.$queryRaw`
+      UPDATE "main"."campeonatos" SET "nome" = ${championship.nome}, "descricao" = ${championship.descricao}, 
+      "premiacao" = ${championship.premiacao}, "dataInicio" = ${championship.dataInicio}, "dataFim" = ${championship.dataFim},
+      "logo" = ${championship.logo}, "situacao" = ${championship.situacao}, "qtdTimes" = ${championship.qtdTimes},
+      "tipoCampeonato" = ${championship.tipoCampeonato}
+      WHERE "main"."campeonatos"."id" = ${championship.id};
+    `;
+  
+    return championshipUpdate;
+  }
+
+  async deleteChampionship(id: string) {
+    const championshipDelete = await this.prisma.$queryRaw`
+			DELETE FROM 'main'.'campeonatos' 
+			WHERE 'main'.'campeonatos'.'id' = ${id};
+		`;
+    return championshipDelete;
   }
 }

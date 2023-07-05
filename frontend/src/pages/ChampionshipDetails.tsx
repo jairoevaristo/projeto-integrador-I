@@ -22,7 +22,14 @@ import { getChampionshipById } from "../services/championship/get-championship-b
 import { getAllTeam } from "../services/team/get-all-team";
 import { ResponseChampionship } from '../types/ReponseChampionship'
 import { ResponseTeam } from "../types/ResponseTeam";
-import { formatTableLabels } from "../utils/format-select-labels";
+import { TeamLabel, formatTableLabels } from "../utils/format-select-labels";
+import { useDebounce } from "../hooks/useDebounce";
+import { useChampionship } from "../hooks/useChampionship";
+import { UpdateChampionshipProps, updateChampionship } from "../services/championship/update-championship";
+import { ResponseEnrollmentTeamProps, getEnrollmentByChampionship } from "../services/enrollment/get-enrollment-by-championship";
+import { deleteChampionship } from "../services/championship/delete-championship";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { createEnrollment } from "../services/enrollment/create-enrollment";
 
 const animatedComponents = makeAnimated();
 
@@ -39,23 +46,67 @@ export const ChampionshipDetails = () => {
     const [selectedChampionshipLogo, setSelectedChampionshipLogo] = useState<File[] | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [teams, setTeams] = useState<ResponseTeam[]>([]);
+    const [listTeams, setListTeams] = useState<ResponseEnrollmentTeamProps[]>([]);
+    const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
+
+    const handleSelectionTeam = (newValue: TeamLabel[], actionMeta: any) => {
+        setSelectedTeams(() => newValue.map(team => team.value));
+        console.log(selectedTeams);
+    };
+
+    const { championship: selectedChampionship } = useChampionship();
+
+    const onDeleteChampionshipClick = async () => {
+        if (selectedChampionship.id) {
+            await deleteChampionship(selectedChampionship.id);
+            handleToast("Campeonato excluído com sucesso!");
+            navigate("/app");
+        }
+    };
+
+    const onCreateEnrollmentClick = async () => {
+        if (selectedChampionship.id) {
+            await createEnrollment(selectedChampionship.id, selectedTeams);
+            handleToast("Inscrição(ões) cadastrada(s) com sucesso!");
+            setShowModal(false);
+        }
+    };
 
     useEffect(() => {
-       setTimeout(() => {
-        getChampionshipById(id)
-        .then((response) => setChampionship(response))
-        .catch((err) => {
-            handleToast(err)
-        })
-        .finally(() => setLoading(false))
-       }, 250)
+        setTimeout(() => {
+            getChampionshipById(id)
+                .then((response) => setChampionship(response))
+                .catch((err) => {
+                    handleToast(err)
+                })
+                .finally(() => setLoading(false))
+        }, 250)
 
-       setTimeout(() => {
-        getAllTeam()
-          .then((response) => setTeams(response))
-          .catch((err) => handleToast(err.response?.data?.message))
-          .finally(() => setLoading(false));
-      }, 250);
+        setTimeout(() => {
+            getAllTeam()
+                .then((response) => setTeams(response))
+                .catch((err) => handleToast(err.response?.data?.message))
+                .finally(() => setLoading(false));
+        }, 250);
+
+      setTimeout(() => {
+        if (selectedChampionship.id) {
+          getEnrollmentByChampionship(selectedChampionship.id)
+            .then((response) => {
+                const newTeams = response.map((enrollment) => ({
+                    id: enrollment.id,
+                    idTime: enrollment.idTime,
+                    nomeCampeonato: enrollment.nomeCampeonato,
+                    nome: enrollment.nome,
+                    escudo: enrollment.escudo,
+                    abreviacao: enrollment.abreviacao,
+                  }));
+                  setListTeams(newTeams);
+            })
+            .catch((err) => console.log(err.response?.data?.message))
+            .finally(() => setLoading(false));
+        }
+      }, 250);    
     }, [])
 
     if (loading) {
@@ -66,12 +117,37 @@ export const ChampionshipDetails = () => {
         )
     }
 
-    const onSubmit = (data: any) => {}
+    const onSubmit = (data: any) => {
+        setLoading(true);
+
+        console.log(selectedAward);
+    
+        const championshipData = {
+            id: selectedChampionship.id,
+            ...data,
+            premiacao: selectedAward === null || selectedAward === "" ? selectedChampionship.premiacao : selectedAward,
+            tipoCampeonato: selectedChampionshipType === null || selectedChampionshipType === "" ? selectedChampionship.tipoCampeonato : selectedChampionshipType,
+            logo: selectedChampionshipLogo === null ? selectedChampionship.logo : selectedChampionshipLogo,
+            situacao: selectedChampionship.situacao,
+        } as UpdateChampionshipProps;
+
+        console.log(championshipData);
+
+        updateChampionship(championshipData)
+          .then((response) => {
+            handleToast(response.message);
+          })
+          .catch((err) => {
+            console.log({err})
+            handleToast(err.response?.data?.message);
+          })
+          .finally(() => setLoading(false));
+    }
 
     return (
         <Layout>
             <div className="mt-10 bg-zinc-900 p-8 rounded-md">
-                <div className="flex pb-2 items-center">
+                <div className="flex pb-2 items-center justify-between w-full">
                    <div className="flex items-center mb-2 gap-3">
                         <button
                             onClick={() => navigate('/app')}
@@ -79,7 +155,13 @@ export const ChampionshipDetails = () => {
                         >
                             <ArrowLeft className="text-white w-5 h-5 group-hover:text-black transition-colors" />
                         </button>
-                        <h1 className="text-3xl font-normal text-white uppercase">{championship?.nome}</h1>
+                        <h1 className="text-3xl font-normal text-white uppercase">{selectedChampionship?.nome}</h1>
+                   </div>
+                   <div className="flex flex-row items-center justify-center h-full cursor-pointer hover:opacity-50" onClick={onDeleteChampionshipClick}>
+                    <button className="flex items-center justify-center gap-2 px-4 py-3 bg-red-600 text-white rounded-md focus:ring-2 focus:outline-none focus:ring-red-300 focus:ring-offset-2 focus:ring-offset-red-600 hover:bg-red-700 transition-colors">
+                        <TrashIcon className="text-white h-5 w-5"/>
+                        <h1>Excluir</h1>
+                    </button>
                    </div>
                 </div>
 
@@ -94,7 +176,7 @@ export const ChampionshipDetails = () => {
                     <ControllerTextInput
                         control={control}
                         autoFocus
-                        defaultValue={championship?.nome}
+                        defaultValue={selectedChampionship?.nome}
                         name="nome"
                         label="Nome do campeonato"
                     />
@@ -103,7 +185,7 @@ export const ChampionshipDetails = () => {
                         control={control}
                         name="descricao"
                         isTextArea
-                        defaultValue={championship?.descricao}
+                        defaultValue={selectedChampionship?.descricao}
                         label="Descrição do campeonato"
                         maxLength={500}
                     />
@@ -114,7 +196,7 @@ export const ChampionshipDetails = () => {
                             label="Data do início do campeonato"
                             name="dataInicio"
                             mask="99/99/9999"
-                            defaultValue={championship?.dataInicio}
+                            defaultValue={selectedChampionship?.dataInicio}
                             rightIcon={
                                 <CalendarBlank size={20} className="text-white" />
                             }
@@ -125,7 +207,7 @@ export const ChampionshipDetails = () => {
                             label="Data do fim do campeonato"
                             name="dataFim"
                             mask="99/99/9999"
-                            defaultValue={championship?.dataFim}
+                            defaultValue={selectedChampionship?.dataFim}
                             rightIcon={
                                 <CalendarBlank size={20} className="text-white" />
                             }
@@ -133,7 +215,7 @@ export const ChampionshipDetails = () => {
 
                         <Select 
                             label="Escolher premiação"
-                            placeholder={selectedAward ? selectedAward : championship?.premiacao}
+                            placeholder={selectedAward ? selectedAward : selectedChampionship?.premiacao}
                             icon={<Trophy size={20} className="text-white" />}
                             options={[
                                 {
@@ -163,17 +245,17 @@ export const ChampionshipDetails = () => {
                     <div className="grid grid-cols-3 gap-4">
                         <Select
                             label="Escolher tipo de campeonato"
-                            placeholder={selectedChampionshipType ? selectedChampionshipType : championship?.tipoCampeonato}
+                            placeholder={selectedChampionshipType ? selectedChampionshipType : selectedChampionship?.tipoCampeonato}
                             options={[
                                 {
                                     id: 1,
                                     name: 'Pontos corridos',
-                                    onClick: () => setSelectedChampionshipType('Pontos Corridos')
+                                    onClick: () => setSelectedChampionshipType('PONTOS CORRIDOS')
                                 },
                                 {
                                     id: 2,
                                     name: 'PlayOff',
-                                    onClick: () => setSelectedChampionshipType('PlayOff'),
+                                    onClick: () => setSelectedChampionshipType('PLAYOFF'),
                                 }
                             ]}
                         />
@@ -181,7 +263,7 @@ export const ChampionshipDetails = () => {
                         <ControllerTextInput
                             control={control}
                             name="qtdTimes"
-                            defaultValue={String(championship?.qtdTimes)}
+                            defaultValue={String(selectedChampionship?.qtdTimes)}
                             label="Quantidade de times"
                             maxLength={500}
                         />
@@ -189,7 +271,8 @@ export const ChampionshipDetails = () => {
                         <div className="p-2">
                             <UploadAvatar
                                 title="Selecione uma logo para o campeonato"
-                                onHandleSelectedAvatar={setSelectedChampionshipLogo} 
+                                onHandleSelectedAvatar={setSelectedChampionshipLogo}
+                                value={selectedChampionship.logo}
                             />
                         </div>
                     </div>
@@ -218,35 +301,14 @@ export const ChampionshipDetails = () => {
                     </div>
 
                     <Table
-                        data={[
-                            {
-                                abreviacao: 'RFE',
-                                campeonatoId: 'd',
-                                escudo: 'https://github.com/jairoevaristo.png',
-                                id: 'ds',
-                                nome: 'Vasco'
-                            },
-                            {
-                                abreviacao: 'RFE',
-                                campeonatoId: 'd',
-                                escudo: 'https://github.com/jairoevaristo.png',
-                                id: 'dws',
-                                nome: 'Vasco'
-                            },
-                            {
-                                abreviacao: 'RFE',
-                                campeonatoId: 'd',
-                                escudo: 'https://github.com/jairoevaristo.png',
-                                id: 'ds3',
-                                nome: 'Vasco'
-                            }
-                        ]}
+                        data={listTeams}
                         labels={[
                             { id: "0", nome: "Escudo" },
                             { id: "1", nome: "Nome" },
                             { id: "2", nome: "Abreviação" },
                         ]}
                         isEdit={false}
+                        isEnrollment={true}
                     />
                 </section>
                </Accordion>
@@ -256,6 +318,7 @@ export const ChampionshipDetails = () => {
                 text="Inscrever um time"
                 onClose={() => setShowModal(false)}
                 onClickCanceled={() => setShowModal(false)}
+                onClickConfirmed={onCreateEnrollmentClick}
                 icon={<></>}
             >
                 <div className="p-4 w-full">
@@ -266,6 +329,7 @@ export const ChampionshipDetails = () => {
                         className="basic-multi-select"
                         classNamePrefix="select"
                         placeholder="Times cadastros"
+                        onChange={handleSelectionTeam}
                     />
                 </div>
             </Modal>

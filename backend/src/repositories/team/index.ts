@@ -48,7 +48,7 @@ export class TeamRepository {
         T.nome,
         T.abreviacao,
         T.escudo,
-        GROUP_CONCAT(C.nome, '; ') AS "campeonatos"
+        GROUP_CONCAT(C.nome, ';') AS "campeonatos"
       FROM
         "times" T
         LEFT JOIN "inscricao_campeonato" IC ON IC.timeId = T.id
